@@ -11,267 +11,386 @@
   <!-- SheetJS for Excel export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #e6f2ff;
-      padding: 40px;
-      color: #004080;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      position: relative;
     }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,112C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat;
+      background-size: cover;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
     h1 {
       text-align: center;
-      color: #00264d;
+      color: white;
       font-weight: 700;
-      margin-bottom: 5px;
-      font-size: 28px;
+      margin-bottom: 10px;
+      font-size: 32px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      animation: fadeInDown 0.8s ease;
     }
+
     h2 {
       text-align: center;
+      color: rgba(255,255,255,0.9);
       margin-bottom: 30px;
+      font-weight: 400;
+      font-size: 18px;
+      animation: fadeInUp 0.8s ease 0.2s both;
     }
+
     .as-of-date {
       text-align: center;
       font-size: 16px;
-      color: #003366;
-      margin-bottom: 20px;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 30px;
       font-weight: 600;
+      background: rgba(255,255,255,0.1);
+      padding: 10px 20px;
+      border-radius: 25px;
+      display: inline-block;
+      backdrop-filter: blur(10px);
+      animation: fadeInUp 0.8s ease 0.4s both;
     }
+
     .login-container {
-      max-width: 400px;
+      max-width: 450px;
       margin: 100px auto;
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      background: rgba(255,255,255,0.95);
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      animation: slideInUp 0.6s ease;
     }
+
     .login-container h2 {
       margin-top: 0;
-      color: #00264d;
+      color: #4a5568;
+      font-size: 24px;
+      margin-bottom: 30px;
     }
+
     .login-container input[type="text"],
     .login-container input[type="password"] {
       width: 100%;
-      padding: 12px 16px;
+      padding: 15px 20px;
       font-size: 16px;
-      border: 1px solid #b3d9ff;
-      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
       outline: none;
       box-sizing: border-box;
       margin-bottom: 20px;
+      transition: all 0.3s ease;
+      background: #f7fafc;
     }
+
+    .login-container input:focus {
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+
     .login-container button {
       width: 100%;
-      padding: 12px 22px;
+      padding: 15px 25px;
       font-size: 16px;
-      background-color: #3399ff;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-      transition: background-color 0.3s ease;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102,126,234,0.3);
     }
+
     .login-container button:hover {
-      background-color: #1a8cff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102,126,234,0.4);
     }
+
     .error-message {
-      color: #cc0000;
+      color: #e53e3e;
       text-align: center;
       margin-top: 15px;
       font-weight: 600;
+      background: #fed7d7;
+      padding: 10px;
+      border-radius: 8px;
+      animation: shake 0.5s ease;
     }
+
     .success-message {
-      color: #008000;
+      color: #38a169;
       text-align: center;
       margin-top: 15px;
       font-weight: 600;
+      background: #c6f6d5;
+      padding: 10px;
+      border-radius: 8px;
     }
+
     #mainApp {
       display: none;
+      animation: fadeIn 0.5s ease;
     }
+
     .logout-btn {
       display: block;
       margin: 30px auto;
-      padding: 12px 24px;
-      background-color: #003366;
+      padding: 12px 30px;
+      background: rgba(255,255,255,0.2);
       color: white;
-      border: none;
-      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 25px;
       cursor: pointer;
       font-size: 16px;
-      width: 200px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
     }
+
     .logout-btn:hover {
-      background-color: #002244;
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
+
     .search-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+      animation: fadeInUp 0.8s ease 0.6s both;
     }
+
     .search-box {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      width: 320px;
+      background: rgba(255,255,255,0.95);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
       text-align: center;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.2);
+      position: relative;
+      overflow: hidden;
     }
-    .search-box.wide {
-      width: 680px;
+
+    .search-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+      background-size: 200% 100%;
+      animation: shimmer 3s infinite;
     }
-    input[type="text"] {
-      padding: 12px 16px;
-      font-size: 16px;
-      width: 90%;
-      border: 1px solid #b3d9ff;
-      border-radius: 8px;
-      outline: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+    .search-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .search-box h3 {
+      color: #4a5568;
       margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
-    button {
-      padding: 12px 22px;
+
+    .search-box h3 i {
+      color: #667eea;
+      font-size: 20px;
+    }
+
+    .search-box input[type="text"] {
+      width: 100%;
+      padding: 15px 20px;
       font-size: 16px;
-      background-color: #3399ff;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      outline: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      background: #f7fafc;
+    }
+
+    .search-box input:focus {
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+
+    .search-box button {
+      width: 100%;
+      padding: 15px 25px;
+      font-size: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-      transition: background-color 0.3s ease;
-      width: 100%;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
-    button:hover { background-color: #1a8cff; }
+
+    .search-box button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+    }
+
+    .search-box button i {
+      font-size: 18px;
+    }
+
+    #results {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      backdrop-filter: blur(10px);
+      margin-top: 20px;
+      animation: fadeInUp 0.5s ease;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 25px;
-      background-color: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
+
     th, td {
-      border: 1px solid #cce0ff;
-      padding: 12px 14px;
+      border: 1px solid #e2e8f0;
+      padding: 15px;
       text-align: left;
     }
+
     th {
-      background-color: #cce6ff;
-      color: #003366;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    td.amount { text-align: right; font-family: 'Courier New', Courier, monospace; }
-    td.payment { color: #008000; font-weight: 600; }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    tr:hover {
+      background-color: #edf2f7;
+      transition: background-color 0.2s ease;
+    }
+
+    td.amount { 
+      text-align: right; 
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 600;
+    }
+
+    td.payment { 
+      color: #38a169; 
+      font-weight: 600;
+    }
+
     .section-title {
       margin-top: 40px;
-      font-size: 22px;
-      font-weight: 600;
-      color: #003366;
-      border-bottom: 2px solid #3399ff;
-      padding-bottom: 6px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #4a5568;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 10px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
+
+    .section-title::before {
+      content: '';
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
     .not-found {
       text-align: center;
       font-weight: 700;
-      color: #cc0000;
+      color: #e53e3e;
       margin-top: 30px;
       font-size: 18px;
+      background: #fed7d7;
+      padding: 20px;
+      border-radius: 12px;
+      animation: pulse 2s infinite;
     }
+
     .grand-total {
       margin-top: 30px;
       text-align: right;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
-      color: #00264d;
-    }
-    .pdf-button {
-      display: block;
-      margin: 30px auto 0;
-      width: 250px;
-      background-color: #004080;
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-    }
-    .pdf-button:hover { background-color: #063a73; }
-    a.site-link {
-      color: #004080;
-      text-decoration: underline;
-      cursor: pointer;
-    }
-    .summary-totals {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 30px;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .summary-card {
-      background: white;
-      padding: 20px 30px;
+      color: #4a5568;
+      background: linear-gradient(135deg, #f6f9fc 0%, #e9ecef 100%);
+      padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      text-align: center;
-      min-width: 200px;
+      border-left: 5px solid #667eea;
     }
-    .summary-card h3 {
-      margin: 0 0 10px 0;
-      color: #003366;
-      font-size: 18px;
-    }
-    .summary-card .amount-big {
-      font-size: 24px;
-      font-weight: 700;
-      color: #00264d;
-      font-family: 'Courier New', Courier, monospace;
-    }
-    .age-table {
-      overflow-x: auto;
-    }
-    .age-table table {
-      min-width: 900px;
-    }
-    .age-bracket {
-      background-color: #f0f8ff;
-    }
-    .age-header {
-      background-color: #b3d9ff;
-    }
-    .sort-container {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 15px;
-      gap: 10px;
-      align-items: center;
-    }
-    .sort-label {
-      font-weight: 600;
-      color: #003366;
-    }
-    .sort-button {
-      padding: 8px 16px;
-      font-size: 14px;
-      background-color: #f0f8ff;
-      color: #003366;
-      border: 1px solid #b3d9ff;
-      border-radius: 6px;
-      cursor: pointer;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      transition: all 0.2s ease;
-      width: auto;
-    }
-    .sort-button:hover {
-      background-color: #e0f0ff;
-    }
-    .sort-button.active {
-      background-color: #3399ff;
-      color: white;
-      border-color: #3399ff;
-    }
+
     .download-container {
       display: flex;
       justify-content: center;
@@ -279,88 +398,442 @@
       margin-top: 30px;
       flex-wrap: wrap;
     }
+
     .download-button {
-      display: block;
-      width: 250px;
-      background-color: #004080;
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 25px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px;
       border: none;
       cursor: pointer;
-      text-align: center;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+      min-width: 200px;
     }
-    .download-button:hover { background-color: #063a73; }
+
+    .download-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+    }
+
     .download-button.excel {
-      background-color: #107c41;
+      background: linear-gradient(135deg, #107c41 0%, #0e5e2e 100%);
+      box-shadow: 0 4px 15px rgba(16,124,65,0.3);
     }
-    .download-button.excel:hover { background-color: #0e5e2e; }
+
+    .download-button.excel:hover {
+      box-shadow: 0 6px 20px rgba(16,124,65,0.4);
+    }
+
     .download-button.secondary {
-      background-color: #6c757d;
+      background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+      box-shadow: 0 4px 15px rgba(108,117,125,0.3);
     }
-    .download-button.secondary:hover { background-color: #5a6268; }
+
+    .download-button.secondary:hover {
+      box-shadow: 0 6px 20px rgba(108,117,125,0.4);
+    }
+
     .download-button.secondary.excel {
-      background-color: #6f8a52;
+      background: linear-gradient(135deg, #6f8a52 0%, #5a6e42 100%);
+      box-shadow: 0 4px 15px rgba(111,138,82,0.3);
     }
-    .download-button.secondary.excel:hover { background-color: #5a6e42; }
+
+    .download-button.secondary.excel:hover {
+      box-shadow: 0 6px 20px rgba(111,138,82,0.4);
+    }
+
+    a.site-link {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    a.site-link:hover {
+      background: rgba(102,126,234,0.1);
+      color: #764ba2;
+    }
+
+    .summary-totals {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .summary-card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid #e2e8f0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .summary-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+    }
+
+    .summary-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+    }
+
+    .summary-card h3 {
+      margin: 0 0 15px 0;
+      color: #4a5568;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .summary-card .amount-big {
+      font-size: 28px;
+      font-weight: 700;
+      color: #667eea;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .age-table {
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .age-table table {
+      min-width: 900px;
+      border-radius: 0;
+    }
+
+    .age-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .sort-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .sort-label {
+      font-weight: 600;
+      color: #4a5568;
+      font-size: 16px;
+    }
+
+    .sort-button {
+      padding: 10px 20px;
+      font-size: 14px;
+      background: white;
+      color: #4a5568;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .sort-button:hover {
+      border-color: #667eea;
+      color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102,126,234,0.2);
+    }
+
+    .sort-button.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: #667eea;
+      box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+    }
+
+    .customer-selector {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .customer-selector label {
+      font-weight: 600;
+      color: #4a5568;
+      font-size: 16px;
+    }
+
+    .customer-selector select {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      outline: none;
+      background: white;
+      min-width: 300px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .customer-selector select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+
+    .statement-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 30px;
+      background: linear-gradient(135deg, #f6f9fc 0%, #e9ecef 100%);
+      border-radius: 15px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .statement-header h2 {
+      color: #4a5568;
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .statement-header .statement-date {
+      color: #718096;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .customer-info {
+      background: #f8fafc;
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      border-left: 5px solid #667eea;
+      border: 1px solid #e2e8f0;
+    }
+
+    .customer-info h3 {
+      margin: 0 0 15px 0;
+      color: #4a5568;
+      font-size: 20px;
+    }
+
+    .customer-info p {
+      margin: 8px 0;
+      color: #718096;
+      font-size: 16px;
+    }
+
+    .statement-table {
+      margin-bottom: 30px;
+    }
+
+    .statement-table th {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: 600;
+    }
+
+    .statement-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .statement-total {
+      background: #e6f2ff !important;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .statement-footer {
+      margin-top: 40px;
+      padding: 25px;
+      background: #f0f8ff;
+      border-radius: 15px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+    }
+
+    .statement-footer p {
+      margin: 8px 0;
+      color: #718096;
+    }
+
+    .statement-footer .note {
+      font-style: italic;
+      color: #a0aec0;
+      margin-top: 15px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .search-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .search-box {
+        padding: 20px;
+      }
+
+      .summary-totals {
+        grid-template-columns: 1fr;
+      }
+
+      .download-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .download-button {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .age-table {
+        font-size: 14px;
+      }
+
+      .age-table table {
+        min-width: 700px;
+      }
+    }
   </style>
 </head>
 <body>
 
   <!-- Login Screen -->
   <div id="loginScreen" class="login-container">
-    <h1>DOK Solutions Lanka (Pvt) Ltd</h1>
-    <h2>Login to Outstanding Summary</h2>
+    <h2><i class="fas fa-lock"></i> Login to Outstanding Summary</h2>
     <input type="text" id="username" placeholder="Enter Username" onkeypress="handleLoginKeyPress(event)" />
     <input type="password" id="password" placeholder="Enter Password" onkeypress="handleLoginKeyPress(event)" />
-    <button onclick="login()">Login</button>
+    <button onclick="login()"><i class="fas fa-sign-in-alt"></i> Login</button>
     <div id="loginMessage"></div>
   </div>
 
   <!-- Main Application (Hidden until login) -->
-  <div id="mainApp">
-    <h1>DOK Solutions Lanka (Pvt) Ltd</h1>
-    <h2>Outstanding Invoice Search</h2>
+  <div id="mainApp" class="container">
+    <h1><i class="fas fa-building"></i> DOK Solutions Lanka (Pvt) Ltd</h1>
+    <h2>Outstanding Invoice Management System</h2>
     <div id="asOfDate" class="as-of-date"></div>
 
     <div class="search-container">
       <div class="search-box">
-        <h3>Search by Site Code</h3>
+        <h3><i class="fas fa-search"></i> Search by Site Code</h3>
         <input type="text" id="siteCodeInput" placeholder="Enter Site Code (e.g. CCC01)" onkeypress="handleKeyPress(event, 'site')" />
-        <button onclick="searchBySiteCode()">Search Site Code</button>
+        <button onclick="searchBySiteCode()"><i class="fas fa-search"></i> Search Site Code</button>
       </div>
 
       <div class="search-box">
-        <h3>Search by Invoice Number</h3>
+        <h3><i class="fas fa-file-invoice"></i> Search by Invoice Number</h3>
         <input type="text" id="invoiceNoInput" placeholder="Enter Invoice Number" onkeypress="handleKeyPress(event, 'invoice')" />
-        <button onclick="searchByInvoiceNo()">Search Invoice No</button>
+        <button onclick="searchByInvoiceNo()"><i class="fas fa-search"></i> Search Invoice No</button>
       </div>
 
-      <div class="search-box wide">
-        <h3>Find Site by Customer Name</h3>
+      <div class="search-box">
+        <h3><i class="fas fa-users"></i> Find Site by Customer Name</h3>
         <input type="text" id="customerNameInput" placeholder="Enter part of Customer Name" onkeypress="handleKeyPress(event, 'customer')" />
-        <button onclick="searchByCustomerName()">Find Site</button>
+        <button onclick="searchByCustomerName()"><i class="fas fa-search"></i> Find Site</button>
       </div>
 
-      <div class="search-box wide">
-        <h3>Total Customer Outstanding Summary</h3>
-        <button onclick="showCustomerSummary()">Show All Customer Outstandings</button>
+      <div class="search-box">
+        <h3><i class="fas fa-chart-line"></i> Total Customer Outstanding Summary</h3>
+        <button onclick="showCustomerSummary()"><i class="fas fa-chart-bar"></i> Show All Customer Outstandings</button>
       </div>
 
-      <div class="search-box wide">
-        <h3>Customer Outstanding (Without Excess Payments)</h3>
-        <button onclick="showCustomerSummaryWithoutExcess()">Show Outstanding Without Excess</button>
+      <div class="search-box">
+        <h3><i class="fas fa-filter"></i> Customer Outstanding (Without Excess)</h3>
+        <button onclick="showCustomerSummaryWithoutExcess()"><i class="fas fa-calculator"></i> Show Outstanding Without Excess</button>
       </div>
 
-      <div class="search-box wide">
-        <h3>Age Analysis (Customer Wise)</h3>
-        <button onclick="showAgeAnalysis()">Show Age Analysis</button>
+      <div class="search-box">
+        <h3><i class="fas fa-clock"></i> Age Analysis (Customer Wise)</h3>
+        <button onclick="showAgeAnalysis()"><i class="fas fa-hourglass-half"></i> Show Age Analysis</button>
       </div>
     </div>
 
     <div id="results"></div>
     
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
   </div>
 
   <script>
@@ -400,11 +873,11 @@
       const messageDiv = document.getElementById('loginMessage');
 
       if (!username || !password) {
-        messageDiv.innerHTML = '<div class="error-message">Please enter both username and password</div>';
+        messageDiv.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> Please enter both username and password</div>';
         return;
       }
 
-      messageDiv.innerHTML = '<div class="success-message">Validating credentials...</div>';
+      messageDiv.innerHTML = '<div class="success-message"><i class="fas fa-spinner fa-spin"></i> Validating credentials...</div>';
 
       const rows = await fetchSheetData();
       let loginSuccess = false;
@@ -425,7 +898,7 @@
       }
 
       if (loginSuccess) {
-        messageDiv.innerHTML = '<div class="success-message">Login successful! Redirecting...</div>';
+        messageDiv.innerHTML = '<div class="success-message"><i class="fas fa-check-circle"></i> Login successful! Redirecting...</div>';
         isLoggedIn = true;
         
         setTimeout(async () => {
@@ -436,7 +909,7 @@
           await loadAllCustomers();
         }, 1000);
       } else {
-        messageDiv.innerHTML = '<div class="error-message">Invalid username or password</div>';
+        messageDiv.innerHTML = '<div class="error-message"><i class="fas fa-times-circle"></i> Invalid username or password</div>';
         document.getElementById('password').value = '';
       }
     }
@@ -473,14 +946,14 @@
           console.log('Column label (A1):', firstColLabel);
           
           if (firstColLabel) {
-            document.getElementById('asOfDate').innerHTML = firstColLabel.toString();
+            document.getElementById('asOfDate').innerHTML = `<i class="fas fa-calendar-alt"></i> ${firstColLabel.toString()}`;
           } else {
-            document.getElementById('asOfDate').innerHTML = 'As of Date not found';
+            document.getElementById('asOfDate').innerHTML = '<i class="fas fa-calendar-alt"></i> As of Date not found';
           }
         }
       } catch (error) {
         console.error('Error fetching As of Date:', error);
-        document.getElementById('asOfDate').innerHTML = 'Error loading date';
+        document.getElementById('asOfDate').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error loading date';
       }
     }
 
@@ -593,14 +1066,14 @@
     function renderSortButtons(viewType) {
       return `
         <div class="sort-container">
-          <span class="sort-label">Sort by:</span>
+          <span class="sort-label"><i class="fas fa-sort"></i> Sort by:</span>
           <button class="sort-button ${currentSortType === 'alphabetical' ? 'active' : ''}" 
                   onclick="changeSortType('alphabetical', '${viewType}')">
-            Customer Name (A-Z)
+            <i class="fas fa-sort-alpha-down"></i> Customer Name (A-Z)
           </button>
           <button class="sort-button ${currentSortType === 'amount' ? 'active' : ''}" 
                   onclick="changeSortType('amount', '${viewType}')">
-            Total Outstanding (High to Low)
+            <i class="fas fa-sort-amount-down"></i> Total Outstanding (High to Low)
           </button>
         </div>
       `;
@@ -624,7 +1097,7 @@
 
     async function showAgeAnalysis() {
       const resultsDiv = document.getElementById('results');
-      resultsDiv.innerHTML = `<div class="not-found">Loading age analysis data...</div>`;
+      resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-spinner fa-spin"></i> Loading age analysis data...</div>`;
 
       const rows = await fetchSheetData();
       const customerAgeData = {};
@@ -684,7 +1157,7 @@
       isWithoutExcessView = false;
 
       if (sortedData.length === 0) {
-        resultsDiv.innerHTML = `<div class="not-found">No outstanding invoices found for age analysis.</div>`;
+        resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-circle"></i> No outstanding invoices found for age analysis.</div>`;
         return;
       }
 
@@ -705,7 +1178,7 @@
       let grandTotal = 0;
 
       let html = renderSortButtons('ageAnalysis');
-      html += `<div class="section-title">Age Analysis (Customer Wise)</div>
+      html += `<div class="section-title"><i class="fas fa-clock"></i> Age Analysis (Customer Wise)</div>
                <div class="age-table">
                <table>
                  <thead>
@@ -760,38 +1233,38 @@
 
       html += `<div class="summary-totals">
         <div class="summary-card">
-          <h3>0-30 Days</h3>
+          <h3><i class="fas fa-hourglass-start"></i> 0-30 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total0_30)}</div>
         </div>
         <div class="summary-card">
-          <h3>31-60 Days</h3>
+          <h3><i class="fas fa-hourglass-half"></i> 31-60 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total31_60)}</div>
         </div>
         <div class="summary-card">
-          <h3>61-90 Days</h3>
+          <h3><i class="fas fa-hourglass-end"></i> 61-90 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total61_90)}</div>
         </div>
         <div class="summary-card">
-          <h3>91-180 Days</h3>
+          <h3><i class="fas fa-calendar-week"></i> 91-180 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total91_180)}</div>
         </div>
         <div class="summary-card">
-          <h3>181-360 Days</h3>
+          <h3><i class="fas fa-calendar-alt"></i> 181-360 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total181_360)}</div>
         </div>
         <div class="summary-card">
-          <h3>>360 Days</h3>
+          <h3><i class="fas fa-calendar-times"></i> >360 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(totalOver360)}</div>
         </div>
         <div class="summary-card">
-          <h3>Total Outstanding</h3>
+          <h3><i class="fas fa-chart-line"></i> Total Outstanding</h3>
           <div class="amount-big">Rs. ${formatAmount(grandTotal)}</div>
         </div>
       </div>`;
 
       html += `<div class="download-container">
-        <button class="download-button" onclick="downloadAgeAnalysisPDF()">Download as PDF</button>
-        <button class="download-button excel" onclick="downloadAgeAnalysisExcel()">Download as Excel</button>
+        <button class="download-button" onclick="downloadAgeAnalysisPDF()"><i class="fas fa-file-pdf"></i> Download as PDF</button>
+        <button class="download-button excel" onclick="downloadAgeAnalysisExcel()"><i class="fas fa-file-excel"></i> Download as Excel</button>
       </div>`;
 
       resultsDiv.innerHTML = html;
@@ -1036,7 +1509,7 @@
 
     async function showCustomerSummary() {
       const resultsDiv = document.getElementById('results');
-      resultsDiv.innerHTML = `<div class="not-found">Loading customer summary data...</div>`;
+      resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-spinner fa-spin"></i> Loading customer summary data...</div>`;
 
       const rows = await fetchSheetData();
       const customerData = {};
@@ -1084,7 +1557,7 @@
       isWithoutExcessView = false;
 
       if (sortedData.length === 0) {
-        resultsDiv.innerHTML = `<div class="not-found">No outstanding invoices found.</div>`;
+        resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-circle"></i> No outstanding invoices found.</div>`;
         return;
       }
 
@@ -1101,7 +1574,7 @@
       let totalGrand = 0;
 
       let html = renderSortButtons('summary');
-      html += `<div class="section-title">Total Customer Outstanding Summary (PA & DA)</div>
+      html += `<div class="section-title"><i class="fas fa-chart-bar"></i> Total Customer Outstanding Summary (PA & DA)</div>
                <table>
                  <thead>
                    <tr>
@@ -1152,28 +1625,28 @@
 
       html += `<div class="summary-totals">
         <div class="summary-card">
-          <h3>Total PA Outstanding</h3>
+          <h3><i class="fas fa-file-invoice"></i> Total PA Outstanding</h3>
           <div class="amount-big">Rs. ${formatAmount(totalPA)}</div>
         </div>
         <div class="summary-card">
-          <h3>Total DA Outstanding</h3>
+          <h3><i class="fas fa-file-invoice-dollar"></i> Total DA Outstanding</h3>
           <div class="amount-big">Rs. ${formatAmount(totalDA)}</div>
         </div>
         <div class="summary-card">
-          <h3>Total Excess Payments</h3>
-          <div class="amount-big" style="color: #008000;">${totalExcess < 0 ? '(' : ''}Rs. ${formatAmount(Math.abs(totalExcess))}${totalExcess < 0 ? ')' : ''}</div>
+          <h3><i class="fas fa-hand-holding-usd"></i> Total Excess Payments</h3>
+          <div class="amount-big" style="color: #38a169;">${totalExcess < 0 ? '(' : ''}Rs. ${formatAmount(Math.abs(totalExcess))}${totalExcess < 0 ? ')' : ''}</div>
         </div>
         <div class="summary-card">
-          <h3>Net Total Outstanding</h3>
+          <h3><i class="fas fa-chart-line"></i> Net Total Outstanding</h3>
           <div class="amount-big">Rs. ${formatAmount(totalGrand)}</div>
         </div>
       </div>`;
 
       html += `<div class="download-container">
-        <button class="download-button" onclick="downloadSummaryPDF()">Download as PDF</button>
-        <button class="download-button excel" onclick="downloadSummaryExcel()">Download as Excel</button>
-        <button class="download-button secondary" onclick="downloadSummaryPDFWithoutExcess()">Download PDF (Without Excess)</button>
-        <button class="download-button secondary excel" onclick="downloadSummaryExcelWithoutExcess()">Download Excel (Without Excess)</button>
+        <button class="download-button" onclick="downloadSummaryPDF()"><i class="fas fa-file-pdf"></i> Download as PDF</button>
+        <button class="download-button excel" onclick="downloadSummaryExcel()"><i class="fas fa-file-excel"></i> Download as Excel</button>
+        <button class="download-button secondary" onclick="downloadSummaryPDFWithoutExcess()"><i class="fas fa-file-pdf"></i> Download PDF (Without Excess)</button>
+        <button class="download-button secondary excel" onclick="downloadSummaryExcelWithoutExcess()"><i class="fas fa-file-excel"></i> Download Excel (Without Excess)</button>
       </div>`;
 
       resultsDiv.innerHTML = html;
@@ -1668,7 +2141,7 @@
 
     async function showCustomerSummaryWithoutExcess() {
       const resultsDiv = document.getElementById('results');
-      resultsDiv.innerHTML = `<div class="not-found">Loading customer summary data (without excess payments)...</div>`;
+      resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-spinner fa-spin"></i> Loading customer summary data (without excess payments)...</div>`;
 
       const rows = await fetchSheetData();
       const customerData = {};
@@ -1713,7 +2186,7 @@
       isWithoutExcessView = true;
 
       if (sortedData.length === 0) {
-        resultsDiv.innerHTML = `<div class="not-found">No outstanding invoices found.</div>`;
+        resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-circle"></i> No outstanding invoices found.</div>`;
         return;
       }
 
@@ -1729,7 +2202,7 @@
       let totalGrand = 0;
 
       let html = renderSortButtons('summaryWithoutExcess');
-      html += `<div class="section-title">Customer Outstanding Summary (Without Excess Payments)</div>
+      html += `<div class="section-title"><i class="fas fa-filter"></i> Customer Outstanding Summary (Without Excess Payments)</div>
                <table>
                  <thead>
                    <tr>
@@ -1767,22 +2240,22 @@
 
       html += `<div class="summary-totals">
         <div class="summary-card">
-          <h3>Total PA Outstanding</h3>
+          <h3><i class="fas fa-file-invoice"></i> Total PA Outstanding</h3>
           <div class="amount-big">Rs. ${formatAmount(totalPA)}</div>
         </div>
         <div class="summary-card">
-          <h3>Total DA Outstanding</h3>
+          <h3><i class="fas fa-file-invoice-dollar"></i> Total DA Outstanding</h3>
           <div class="amount-big">Rs. ${formatAmount(totalDA)}</div>
         </div>
         <div class="summary-card">
-          <h3>Total Outstanding</h3>
+          <h3><i class="fas fa-chart-line"></i> Total Outstanding</h3>
           <div class="amount-big">Rs. ${formatAmount(totalGrand)}</div>
         </div>
       </div>`;
 
       html += `<div class="download-container">
-        <button class="download-button" onclick="downloadSummaryWithoutExcessPDF()">Download as PDF</button>
-        <button class="download-button excel" onclick="downloadSummaryWithoutExcessExcel()">Download as Excel</button>
+        <button class="download-button" onclick="downloadSummaryWithoutExcessPDF()"><i class="fas fa-file-pdf"></i> Download as PDF</button>
+        <button class="download-button excel" onclick="downloadSummaryWithoutExcessExcel()"><i class="fas fa-file-excel"></i> Download as Excel</button>
       </div>`;
 
       resultsDiv.innerHTML = html;
@@ -2019,11 +2492,11 @@
       resultsDiv.innerHTML = '';
 
       if (!input) {
-        resultsDiv.innerHTML = `<div class="not-found">Please enter part of a customer name.</div>`;
+        resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-circle"></i> Please enter part of a customer name.</div>`;
         return;
       }
 
-      resultsDiv.innerHTML = `<div class="not-found">Loading data...</div>`;
+      resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-spinner fa-spin"></i> Loading data...</div>`;
 
       const rows = await fetchSheetData();
       const matches = [];
@@ -2039,11 +2512,11 @@
       });
 
       if (matches.length === 0) {
-        resultsDiv.innerHTML = `<div class="not-found">No sites found for Customer Name containing: <strong>${input}</strong></div>`;
+        resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-circle"></i> No sites found for Customer Name containing: <strong>${input}</strong></div>`;
         return;
       }
 
-      let html = `<div class="section-title">Matching Sites</div><table><thead><tr>
+      let html = `<div class="section-title"><i class="fas fa-users"></i> Matching Sites</div><table><thead><tr>
         <th>Customer Name</th><th>Site Code</th></tr></thead><tbody>`;
 
       matches.forEach(m => {
@@ -2064,11 +2537,11 @@
       resultsDiv.innerHTML = '';
 
       if (!input) {
-        resultsDiv.innerHTML = `<div class="not-found">Please enter a site code to search.</div>`;
+        resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-circle"></i> Please enter a site code to search.</div>`;
         return;
       }
 
-      resultsDiv.innerHTML = `<div class="not-found">Loading data...</div>`;
+      resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-spinner fa-spin"></i> Loading data...</div>`;
 
       const rows = await fetchSheetData();
       const paInvoices = [];
@@ -2116,13 +2589,13 @@
       }
 
       if (sortedPA.length === 0 && sortedDA.length === 0) {
-        resultsDiv.innerHTML = `<div class="not-found">No invoices or payments found for Site Code: <strong>${input}</strong></div>`;
+        resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-circle"></i> No invoices or payments found for Site Code: <strong>${input}</strong></div>`;
         return;
       }
 
       function buildTable(title, invoices) {
         let total = 0;
-        let tableHTML = `<div class="section-title">${title}</div><table><thead><tr>
+        let tableHTML = `<div class="section-title"><i class="fas fa-file-invoice"></i> ${title}</div><table><thead><tr>
           <th>Customer Name</th><th>Invoice No / Ref</th><th>Date</th><th>Description</th><th>Amount (Rs.)</th>
         </tr></thead><tbody>`;
 
@@ -2165,8 +2638,8 @@
       
       html += `<div class="grand-total">${titleText}</div>
                <div class="download-container">
-                 <button class="download-button" onclick="downloadPDF()">Download as PDF</button>
-                 <button class="download-button excel" onclick="downloadSiteCodeExcel()">Download as Excel</button>
+                 <button class="download-button" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> Download as PDF</button>
+                 <button class="download-button excel" onclick="downloadSiteCodeExcel()"><i class="fas fa-file-excel"></i> Download as Excel</button>
                </div>`;
       resultsDiv.innerHTML = html;
     }
@@ -2388,11 +2861,11 @@
       resultsDiv.innerHTML = '';
 
       if (!input) {
-        resultsDiv.innerHTML = `<div class="not-found">Please enter an invoice number to search.</div>`;
+        resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-circle"></i> Please enter an invoice number to search.</div>`;
         return;
       }
 
-      resultsDiv.innerHTML = `<div class="not-found">Loading data...</div>`;
+      resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-spinner fa-spin"></i> Loading data...</div>`;
 
       const rows = await fetchSheetData();
       let found = null;
@@ -2413,12 +2886,12 @@
       });
 
       if (!found) {
-        resultsDiv.innerHTML = `<div class="not-found">No invoice found with Invoice Number: <strong>${input}</strong></div>`;
+        resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-circle"></i> No invoice found with Invoice Number: <strong>${input}</strong></div>`;
         return;
       }
 
       resultsDiv.innerHTML = `
-        <div class="section-title">Invoice Details</div>
+        <div class="section-title"><i class="fas fa-file-invoice"></i> Invoice Details</div>
         <table>
           <thead>
             <tr>
