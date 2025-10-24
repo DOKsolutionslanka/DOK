@@ -346,6 +346,7 @@
       font-weight: 600;
       color: #e53e3e;
       background-color: #fed7d7;
+      width: 80px; /* Made the overdue box smaller */
     }
 
     td.overdue.days-0-30 {
@@ -546,10 +547,116 @@
     }
 
     .summary-card .amount-big {
-      font-size: 28px;
+      font-size: 20px; /* Changed from 22px to 20px */
       font-weight: 700;
       color: #667eea;
       font-family: 'Courier New', Courier, monospace;
+    }
+
+    /* Age analysis summary cards with color coding */
+    .age-summary-card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid #e2e8f0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .age-summary-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+    }
+
+    .age-summary-card h3 {
+      margin: 0 0 15px 0;
+      font-size: 14px; /* Made font smaller */
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .age-summary-card .amount-big {
+      font-size: 22px; /* Made font smaller */
+      font-weight: 700;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .age-summary-card.days-0-30 {
+      border-top: 4px solid #38a169;
+    }
+
+    .age-summary-card.days-0-30 h3 {
+      color: #38a169;
+    }
+
+    .age-summary-card.days-0-30 .amount-big {
+      color: #38a169;
+    }
+
+    .age-summary-card.days-31-60 {
+      border-top: 4px solid #d69e2e;
+    }
+
+    .age-summary-card.days-31-60 h3 {
+      color: #d69e2e;
+    }
+
+    .age-summary-card.days-31-60 .amount-big {
+      color: #d69e2e;
+    }
+
+    .age-summary-card.days-61-90 {
+      border-top: 4px solid #dd6b20;
+    }
+
+    .age-summary-card.days-61-90 h3 {
+      color: #dd6b20;
+    }
+
+    .age-summary-card.days-61-90 .amount-big {
+      color: #dd6b20;
+    }
+
+    .age-summary-card.days-91-180 {
+      border-top: 4px solid #e53e3e;
+    }
+
+    .age-summary-card.days-91-180 h3 {
+      color: #e53e3e;
+    }
+
+    .age-summary-card.days-91-180 .amount-big {
+      color: #e53e3e;
+    }
+
+    .age-summary-card.days-181-360 {
+      border-top: 4px solid #9f1239;
+    }
+
+    .age-summary-card.days-181-360 h3 {
+      color: #9f1239;
+    }
+
+    .age-summary-card.days-181-360 .amount-big {
+      color: #9f1239;
+    }
+
+    .age-summary-card.days-360-plus {
+      border-top: 4px solid #7c2d12;
+    }
+
+    .age-summary-card.days-360-plus h3 {
+      color: #7c2d12;
+    }
+
+    .age-summary-card.days-360-plus .amount-big {
+      color: #7c2d12;
     }
 
     .age-table {
@@ -919,6 +1026,7 @@
     let allCustomers = [];
     let isWithoutExcessView = false;
     let previousView = null;
+    let navigationHistory = [];
 
     async function fetchSheetData() {
       try {
@@ -998,6 +1106,7 @@
       rawAgeAnalysisData = null;
       allCustomers = [];
       isWithoutExcessView = false;
+      navigationHistory = [];
     }
 
     async function fetchAsOfDate() {
@@ -1082,7 +1191,7 @@
       return null;
     }
 
-    function calculateOverdueDays(invoiceDate) {
+    function calculateDueDays(invoiceDate) {
       const invDate = parseDate(invoiceDate);
       if (!invDate) return 0;
       
@@ -1093,7 +1202,7 @@
       return Math.max(0, diffDays);
     }
 
-    function getOverdueClass(days) {
+    function getDueClass(days) {
       if (days <= 0) return 'days-0-30';
       if (days <= 30) return 'days-0-30';
       if (days <= 60) return 'days-31-60';
@@ -1119,6 +1228,16 @@
       if (days <= 180) return '91-180';
       if (days <= 360) return '181-360';
       return '>360';
+    }
+
+    function getAgeClass(bracket) {
+      if (bracket === '0-30') return 'days-0-30';
+      if (bracket === '31-60') return 'days-31-60';
+      if (bracket === '61-90') return 'days-61-90';
+      if (bracket === '91-180') return 'days-91-180';
+      if (bracket === '181-360') return 'days-181-360';
+      if (bracket === '>360') return 'days-360-plus';
+      return '';
     }
 
     function sortData(data, sortType) {
@@ -1217,6 +1336,13 @@
       rawAgeAnalysisData = ageAnalysisArray;
       const sortedData = sortData([...ageAnalysisArray], currentSortType);
       
+      // Save current state to navigation history
+      navigationHistory.push({
+        view: 'ageAnalysis',
+        sortType: currentSortType,
+        data: sortedData
+      });
+      
       previousView = currentView;
       currentView = 'ageAnalysis';
       isWithoutExcessView = false;
@@ -1296,27 +1422,27 @@
       html += `</tbody></table></div>`;
 
       html += `<div class="summary-totals">
-        <div class="summary-card">
+        <div class="age-summary-card days-0-30">
           <h3><i class="fas fa-hourglass-start"></i> 0-30 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total0_30)}</div>
         </div>
-        <div class="summary-card">
+        <div class="age-summary-card days-31-60">
           <h3><i class="fas fa-hourglass-half"></i> 31-60 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total31_60)}</div>
         </div>
-        <div class="summary-card">
+        <div class="age-summary-card days-61-90">
           <h3><i class="fas fa-hourglass-end"></i> 61-90 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total61_90)}</div>
         </div>
-        <div class="summary-card">
+        <div class="age-summary-card days-91-180">
           <h3><i class="fas fa-calendar-week"></i> 91-180 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total91_180)}</div>
         </div>
-        <div class="summary-card">
+        <div class="age-summary-card days-181-360">
           <h3><i class="fas fa-calendar-alt"></i> 181-360 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total181_360)}</div>
         </div>
-        <div class="summary-card">
+        <div class="age-summary-card days-360-plus">
           <h3><i class="fas fa-calendar-times"></i> >360 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(totalOver360)}</div>
         </div>
@@ -1594,6 +1720,13 @@
       rawSummaryData = summaryArray;
       const sortedData = sortData([...summaryArray], currentSortType);
       
+      // Save current state to navigation history
+      navigationHistory.push({
+        view: 'summary',
+        sortType: currentSortType,
+        data: sortedData
+      });
+      
       previousView = currentView;
       currentView = 'summary';
       isWithoutExcessView = false;
@@ -1687,8 +1820,6 @@
       html += `<div class="download-container">
         <button class="download-button" onclick="downloadSummaryPDF()"><i class="fas fa-file-pdf"></i> Download as PDF</button>
         <button class="download-button excel" onclick="downloadSummaryExcel()"><i class="fas fa-file-excel"></i> Download as Excel</button>
-        <button class="download-button secondary" onclick="downloadSummaryPDFWithoutExcess()"><i class="fas fa-file-pdf"></i> Download PDF (Without Excess)</button>
-        <button class="download-button secondary excel" onclick="downloadSummaryExcelWithoutExcess()"><i class="fas fa-file-excel"></i> Download Excel (Without Excess)</button>
       </div>`;
 
       html += `<div style="text-align: center;">
@@ -2170,6 +2301,13 @@
       rawSummaryWithoutExcessData = summaryArray;
       const sortedData = sortData([...summaryArray], currentSortType);
       
+      // Save current state to navigation history
+      navigationHistory.push({
+        view: 'summaryWithoutExcess',
+        sortType: currentSortType,
+        data: sortedData
+      });
+      
       previousView = currentView;
       currentView = 'summaryWithoutExcess';
       isWithoutExcessView = true;
@@ -2561,7 +2699,7 @@
       function buildTable(title, invoices) {
         let total = 0;
         let tableHTML = `<div class="section-title"><i class="fas fa-file-invoice"></i> ${title}</div><table><thead><tr>
-          <th>Customer Name</th><th>Invoice No / Ref</th><th>Date</th><th>Description</th><th>Amount (Rs.)</th><th>Overdue Days</th>
+          <th>Customer Name</th><th>Invoice No / Ref</th><th>Date</th><th>Description</th><th>Amount (Rs.)</th><th>Due Days</th>
         </tr></thead><tbody>`;
 
         invoices.forEach(({ customerName, invNo, date, description, amountRaw }) => {
@@ -2570,8 +2708,8 @@
           const amountClass = isPayment ? 'amount payment' : 'amount';
           total += amountRaw;
           
-          const overdueDays = calculateOverdueDays(date);
-          const overdueClass = getOverdueClass(overdueDays);
+          const dueDays = calculateDueDays(date);
+          const dueClass = getDueClass(dueDays);
 
           tableHTML += `<tr>
             <td>${customerName}</td>
@@ -2579,12 +2717,13 @@
             <td>${date}</td>
             <td>${description}</td>
             <td class="${amountClass}">${displayAmount}</td>
-            <td class="overdue ${overdueClass}">${overdueDays}</td>
+            <td class="overdue ${dueClass}">${dueDays}</td>
           </tr>`;
         });
 
-        tableHTML += `<tr><td colspan="5" style="text-align:right; font-weight:700;">Total Outstanding</td>
-          <td class="amount" style="font-weight:700;">${formatAmount(total)}</td></tr></tbody></table>`;
+        tableHTML += `<tr><td colspan="4" style="text-align:right; font-weight:700;">Total Outstanding</td>
+          <td class="amount" style="font-weight:700;">${formatAmount(total)}</td>
+          <td></td></tr></tbody></table>`;
         return { html: tableHTML, total };
       }
 
@@ -2665,7 +2804,8 @@
           cells.forEach((cell, index) => {
             let cellValue = cell.innerText || cell.textContent || '';
             
-            if (index === cells.length - 2) {
+            // Fix: Correctly identify the amount column (index 4) and format it
+            if (index === 4) {
               cellValue = cellValue.replace(/,/g, '').replace(/Rs\.\s*/, '').replace(/[()]/g, '');
               cellValue = parseFloat(cellValue) || 0;
             }
@@ -2883,14 +3023,29 @@
       let startY = 100;
 
       tables.forEach(table => {
+        // Fix: Right-align the amount column (index 4) and center-align due days (index 5)
         doc.autoTable({
           html: table,
           startY,
           theme: 'grid',
           headStyles: { fillColor: [51,153,255], halign: 'center' },
           styles: { fontSize: 9, cellPadding: 4, lineColor: [204,204,204], lineWidth: 0.1 },
-          columnStyles: { [table.rows[0].cells.length - 1]: { halign: 'right' } },
+          columnStyles: { 
+            4: { halign: 'right' },  // Amount column
+            5: { halign: 'center' }  // Due days column
+          },
           margin: { left: 40, right: 40 },
+          // Fix: Make sure the total row is at the bottom of the invoice values
+          didParseCell: function(data) {
+            // Check if this is the total row
+            if (data.row.raw && data.row.raw.cells && 
+                data.row.raw.cells[0] && 
+                data.row.raw.cells[0].textContent.includes('Total Outstanding')) {
+              // Apply special styling to the total row
+              data.cell.styles.fillColor = [230, 242, 255];
+              data.cell.styles.fontStyle = 'bold';
+            }
+          }
         });
         startY = doc.lastAutoTable.finalY + 18;
       });
@@ -2908,15 +3063,32 @@
     }
 
     function goBack() {
-      if (previousView === 'summary') {
-        showCustomerSummary();
-      } else if (previousView === 'summaryWithoutExcess') {
-        showCustomerSummaryWithoutExcess();
-      } else if (previousView === 'ageAnalysis') {
-        showAgeAnalysis();
+      // If navigation history has items, go back to the previous state
+      if (navigationHistory.length > 1) {
+        // Remove current state from history
+        navigationHistory.pop();
+        
+        // Get the previous state
+        const previousState = navigationHistory[navigationHistory.length - 1];
+        
+        // Restore the previous state
+        currentSortType = previousState.sortType;
+        currentView = previousState.view;
+        
+        // Re-render the previous view with its data and sort type
+        if (previousState.view === 'summary') {
+          renderCustomerSummary(previousState.data);
+        } else if (previousState.view === 'summaryWithoutExcess') {
+          renderCustomerSummaryWithoutExcess(previousState.data);
+        } else if (previousState.view === 'ageAnalysis') {
+          renderAgeAnalysis(previousState.data);
+        }
       } else {
+        // If no history, clear results and return to main menu
         document.getElementById('results').innerHTML = '';
         currentView = null;
+        previousView = null;
+        navigationHistory = [];
       }
     }
   </script>
