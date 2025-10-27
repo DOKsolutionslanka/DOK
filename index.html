@@ -587,6 +587,12 @@
       font-family: 'Courier New', Courier, monospace;
     }
 
+    .age-summary-card .percentage {
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+
     .age-summary-card.days-0-30 {
       border-top: 4px solid #38a169;
     }
@@ -596,6 +602,10 @@
     }
 
     .age-summary-card.days-0-30 .amount-big {
+      color: #38a169;
+    }
+
+    .age-summary-card.days-0-30 .percentage {
       color: #38a169;
     }
 
@@ -611,6 +621,10 @@
       color: #d69e2e;
     }
 
+    .age-summary-card.days-31-60 .percentage {
+      color: #d69e2e;
+    }
+
     .age-summary-card.days-61-90 {
       border-top: 4px solid #dd6b20;
     }
@@ -620,6 +634,10 @@
     }
 
     .age-summary-card.days-61-90 .amount-big {
+      color: #dd6b20;
+    }
+
+    .age-summary-card.days-61-90 .percentage {
       color: #dd6b20;
     }
 
@@ -635,6 +653,10 @@
       color: #e53e3e;
     }
 
+    .age-summary-card.days-91-180 .percentage {
+      color: #e53e3e;
+    }
+
     .age-summary-card.days-181-360 {
       border-top: 4px solid #9f1239;
     }
@@ -647,6 +669,10 @@
       color: #9f1239;
     }
 
+    .age-summary-card.days-181-360 .percentage {
+      color: #9f1239;
+    }
+
     .age-summary-card.days-360-plus {
       border-top: 4px solid #7c2d12;
     }
@@ -656,6 +682,10 @@
     }
 
     .age-summary-card.days-360-plus .amount-big {
+      color: #7c2d12;
+    }
+
+    .age-summary-card.days-360-plus .percentage {
       color: #7c2d12;
     }
 
@@ -857,6 +887,115 @@
       box-shadow: 0 6px 15px rgba(108,117,125,0.4);
     }
 
+    .age-filter-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+      /* Initially hide the age filter container */
+      display: none;
+    }
+
+    .age-filter-container.show {
+      display: grid;
+    }
+
+    .age-filter-box {
+      background: rgba(255,255,255,0.95);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .age-filter-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+
+    .age-filter-box h3 {
+      margin: 0 0 15px 0;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .age-filter-box button {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .age-filter-box button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(102,126,234,0.4);
+    }
+
+    .age-filter-box.days-0-30 {
+      border-top: 4px solid #38a169;
+    }
+
+    .age-filter-box.days-0-30 h3 {
+      color: #38a169;
+    }
+
+    .age-filter-box.days-31-60 {
+      border-top: 4px solid #d69e2e;
+    }
+
+    .age-filter-box.days-31-60 h3 {
+      color: #d69e2e;
+    }
+
+    .age-filter-box.days-61-90 {
+      border-top: 4px solid #dd6b20;
+    }
+
+    .age-filter-box.days-61-90 h3 {
+      color: #dd6b20;
+    }
+
+    .age-filter-box.days-91-180 {
+      border-top: 4px solid #e53e3e;
+    }
+
+    .age-filter-box.days-91-180 h3 {
+      color: #e53e3e;
+    }
+
+    .age-filter-box.days-181-360 {
+      border-top: 4px solid #9f1239;
+    }
+
+    .age-filter-box.days-181-360 h3 {
+      color: #9f1239;
+    }
+
+    .age-filter-box.days-360-plus {
+      border-top: 4px solid #7c2d12;
+    }
+
+    .age-filter-box.days-360-plus h3 {
+      color: #7c2d12;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -954,6 +1093,10 @@
       .age-table th, .age-table td {
         padding: 6px 8px;
       }
+
+      .age-filter-container {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -1007,6 +1150,43 @@
         <h3><i class="fas fa-clock"></i> Age Analysis (Customer Wise)</h3>
         <button onclick="showAgeAnalysis()"><i class="fas fa-hourglass-half"></i> Show Age Analysis</button>
       </div>
+
+      <div class="search-box">
+        <h3><i class="fas fa-calendar-alt"></i> Filter Invoices by Age</h3>
+        <button onclick="toggleAgeFilterContainer()"><i class="fas fa-filter"></i> Show Age Filter Options</button>
+      </div>
+    </div>
+
+    <div id="ageFilterContainer" class="age-filter-container">
+      <div class="age-filter-box days-0-30">
+        <h3><i class="fas fa-hourglass-start"></i> 0-30 Days</h3>
+        <button onclick="showInvoicesByAge('0-30')"><i class="fas fa-filter"></i> Show Invoices</button>
+      </div>
+
+      <div class="age-filter-box days-31-60">
+        <h3><i class="fas fa-hourglass-half"></i> 31-60 Days</h3>
+        <button onclick="showInvoicesByAge('31-60')"><i class="fas fa-filter"></i> Show Invoices</button>
+      </div>
+
+      <div class="age-filter-box days-61-90">
+        <h3><i class="fas fa-hourglass-end"></i> 61-90 Days</h3>
+        <button onclick="showInvoicesByAge('61-90')"><i class="fas fa-filter"></i> Show Invoices</button>
+      </div>
+
+      <div class="age-filter-box days-91-180">
+        <h3><i class="fas fa-calendar-week"></i> 91-180 Days</h3>
+        <button onclick="showInvoicesByAge('91-180')"><i class="fas fa-filter"></i> Show Invoices</button>
+      </div>
+
+      <div class="age-filter-box days-181-360">
+        <h3><i class="fas fa-calendar-alt"></i> 181-360 Days</h3>
+        <button onclick="showInvoicesByAge('181-360')"><i class="fas fa-filter"></i> Show Invoices</button>
+      </div>
+
+      <div class="age-filter-box days-360-plus">
+        <h3><i class="fas fa-calendar-times"></i> More than 360 Days</h3>
+        <button onclick="showInvoicesByAge('360-plus')"><i class="fas fa-filter"></i> Show Invoices</button>
+      </div>
     </div>
 
     <div id="results"></div>
@@ -1027,6 +1207,22 @@
     let isWithoutExcessView = false;
     let previousView = null;
     let navigationHistory = [];
+    let currentAgeFilter = null;
+    let rawAgeFilterData = {};
+
+    // Function to toggle the age filter container visibility
+    function toggleAgeFilterContainer() {
+      const container = document.getElementById('ageFilterContainer');
+      container.classList.toggle('show');
+      
+      // Change button text based on visibility
+      const button = document.querySelector('.search-box:last-child button');
+      if (container.classList.contains('show')) {
+        button.innerHTML = '<i class="fas fa-times"></i> Hide Age Filter Options';
+      } else {
+        button.innerHTML = '<i class="fas fa-filter"></i> Show Age Filter Options';
+      }
+    }
 
     async function fetchSheetData() {
       try {
@@ -1107,6 +1303,13 @@
       allCustomers = [];
       isWithoutExcessView = false;
       navigationHistory = [];
+      currentAgeFilter = null;
+      rawAgeFilterData = {};
+      
+      // Hide age filter container on logout
+      document.getElementById('ageFilterContainer').classList.remove('show');
+      const button = document.querySelector('.search-box:last-child button');
+      button.innerHTML = '<i class="fas fa-filter"></i> Show Age Filter Options';
     }
 
     async function fetchAsOfDate() {
@@ -1203,7 +1406,6 @@
     }
 
     function getDueClass(days) {
-      if (days <= 0) return 'days-0-30';
       if (days <= 30) return 'days-0-30';
       if (days <= 60) return 'days-31-60';
       if (days <= 90) return 'days-61-90';
@@ -1222,12 +1424,14 @@
     }
 
     function getAgeBracket(days) {
-      if (days <= 30) return '0-30';
-      if (days <= 60) return '31-60';
-      if (days <= 90) return '61-90';
-      if (days <= 180) return '91-180';
-      if (days <= 360) return '181-360';
-      return '>360';
+      // Fixed: Include the upper bound in each range
+      if (days >= 0 && days <= 30) return '0-30';
+      if (days > 30 && days <= 60) return '31-60';
+      if (days > 60 && days <= 90) return '61-90';
+      if (days > 90 && days <= 180) return '91-180';
+      if (days > 180 && days <= 360) return '181-360';
+      if (days > 360) return '>360';
+      return '0-30'; // Default for negative or zero days
     }
 
     function getAgeClass(bracket) {
@@ -1245,8 +1449,13 @@
         return data.sort((a, b) => a.customerName.localeCompare(b.customerName));
       } else if (sortType === 'amount') {
         return data.sort((a, b) => {
-          const totalA = a.grandTotal !== undefined ? a.grandTotal : (a.total !== undefined ? a.total : 0);
-          const totalB = b.grandTotal !== undefined ? b.grandTotal : (b.total !== undefined ? b.total : 0);
+          // Fixed: Use amountRaw for sorting in age filter views
+          const totalA = a.amountRaw !== undefined ? a.amountRaw : 
+                        (a.grandTotal !== undefined ? a.grandTotal : 
+                        (a.total !== undefined ? a.total : 0));
+          const totalB = b.amountRaw !== undefined ? b.amountRaw : 
+                        (b.grandTotal !== undefined ? b.grandTotal : 
+                        (b.total !== undefined ? b.total : 0));
           return totalB - totalA;
         });
       }
@@ -1281,7 +1490,487 @@
       } else if (viewType === 'ageAnalysis' && rawAgeAnalysisData) {
         const sortedData = sortData([...rawAgeAnalysisData], sortType);
         renderAgeAnalysis(sortedData);
+      } else if (viewType === 'ageFilter' && currentAgeFilter && rawAgeFilterData[currentAgeFilter]) {
+        const sortedData = sortData([...rawAgeFilterData[currentAgeFilter]], sortType);
+        renderInvoicesByAge(sortedData, currentAgeFilter);
       }
+    }
+
+    async function showInvoicesByAge(ageRange) {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-spinner fa-spin"></i> Loading invoices for ${ageRange} days...</div>`;
+      
+      currentAgeFilter = ageRange;
+      
+      // Check if we already have this data cached
+      if (rawAgeFilterData[ageRange]) {
+        const sortedData = sortData([...rawAgeFilterData[ageRange]], currentSortType);
+        
+        // Save current state to navigation history
+        navigationHistory.push({
+          view: 'ageFilter',
+          sortType: currentSortType,
+          data: sortedData,
+          ageRange: ageRange
+        });
+        
+        previousView = currentView;
+        currentView = 'ageFilter';
+        
+        renderInvoicesByAge(sortedData, ageRange);
+        return;
+      }
+      
+      const rows = await fetchSheetData();
+      const invoices = [];
+      
+      rows.forEach(row => {
+        const siteCode = row.c[1]?.v?.toString().toUpperCase() || '';
+        const customerName = row.c[2]?.v?.toString() || '';
+        const invNo = row.c[3]?.v || '';
+        const date = row.c[4]?.f || row.c[4]?.v || '';
+        const description = row.c[5]?.v || '';
+        const amountRaw = row.c[6]?.v || 0;
+        
+        if (!siteCode || !customerName) return;
+        
+        const age = calculateAge(date);
+        const bracket = getAgeBracket(age);
+        
+        // Check if this invoice falls into the requested age range
+        let includeInvoice = false;
+        
+        // Fixed: Use exact matching for age ranges
+        if (ageRange === '0-30' && bracket === '0-30') {
+          includeInvoice = true;
+        } else if (ageRange === '31-60' && bracket === '31-60') {
+          includeInvoice = true;
+        } else if (ageRange === '61-90' && bracket === '61-90') {
+          includeInvoice = true;
+        } else if (ageRange === '91-180' && bracket === '91-180') {
+          includeInvoice = true;
+        } else if (ageRange === '181-360' && bracket === '181-360') {
+          includeInvoice = true;
+        } else if (ageRange === '360-plus' && bracket === '>360') {
+          includeInvoice = true;
+        }
+        
+        // For excess payments, use the same age calculation
+        if (description.toLowerCase() === 'payment') {
+          const paymentAge = calculateAge(date);
+          const paymentBracket = getAgeBracket(paymentAge);
+          
+          // Include excess payments in the appropriate age bucket based on their date
+          if ((ageRange === '0-30' && paymentBracket === '0-30') ||
+              (ageRange === '31-60' && paymentBracket === '31-60') ||
+              (ageRange === '61-90' && paymentBracket === '61-90') ||
+              (ageRange === '91-180' && paymentBracket === '91-180') ||
+              (ageRange === '181-360' && paymentBracket === '181-360') ||
+              (ageRange === '360-plus' && paymentBracket === '>360')) {
+            includeInvoice = true;
+          }
+        }
+        
+        if (includeInvoice) {
+          invoices.push({
+            siteCode,
+            customerName,
+            invNo,
+            date,
+            description,
+            amountRaw,
+            age,
+            ageBracket: bracket
+          });
+        }
+      });
+      
+      // Cache the data for this age range
+      rawAgeFilterData[ageRange] = invoices;
+      
+      const sortedData = sortData([...invoices], currentSortType);
+      
+      // Save current state to navigation history
+      navigationHistory.push({
+        view: 'ageFilter',
+        sortType: currentSortType,
+        data: sortedData,
+        ageRange: ageRange
+      });
+      
+      previousView = currentView;
+      currentView = 'ageFilter';
+      
+      if (sortedData.length === 0) {
+        resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-circle"></i> No invoices found for ${ageRange} days.</div>`;
+        return;
+      }
+      
+      renderInvoicesByAge(sortedData, ageRange);
+    }
+
+    function renderInvoicesByAge(data, ageRange) {
+      const resultsDiv = document.getElementById('results');
+      const invoices = data;
+      
+      let totalAmount = 0;
+      
+      let html = renderSortButtons('ageFilter');
+      
+      // Add title based on age range
+      let titleText = '';
+      let titleIcon = '';
+      let titleColor = '';
+      
+      switch(ageRange) {
+        case '0-30':
+          titleText = 'Invoices & Excess Payments (0-30 Days)';
+          titleIcon = 'fa-hourglass-start';
+          titleColor = '#38a169';
+          break;
+        case '31-60':
+          titleText = 'Invoices & Excess Payments (31-60 Days)';
+          titleIcon = 'fa-hourglass-half';
+          titleColor = '#d69e2e';
+          break;
+        case '61-90':
+          titleText = 'Invoices & Excess Payments (61-90 Days)';
+          titleIcon = 'fa-hourglass-end';
+          titleColor = '#dd6b20';
+          break;
+        case '91-180':
+          titleText = 'Invoices & Excess Payments (91-180 Days)';
+          titleIcon = 'fa-calendar-week';
+          titleColor = '#e53e3e';
+          break;
+        case '181-360':
+          titleText = 'Invoices & Excess Payments (181-360 Days)';
+          titleIcon = 'fa-calendar-alt';
+          titleColor = '#9f1239';
+          break;
+        case '360-plus':
+          titleText = 'Invoices & Excess Payments (More than 360 Days)';
+          titleIcon = 'fa-calendar-times';
+          titleColor = '#7c2d12';
+          break;
+      }
+      
+      html += `<div class="section-title" style="border-bottom-color: ${titleColor};">
+                <i class="fas ${titleIcon}" style="color: ${titleColor};"></i> 
+                ${titleText}
+              </div>`;
+      
+      html += `<table>
+                <thead>
+                  <tr>
+                    <th>Customer Name</th>
+                    <th>Site Code</th>
+                    <th>Invoice No</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Amount (Rs.)</th>
+                    <th>Age (Days)</th>
+                  </tr>
+                </thead>
+                <tbody>`;
+      
+      invoices.forEach(invoice => {
+        const isPayment = invoice.description.toLowerCase().includes('payment');
+        const displayAmount = isPayment ? `(${formatAmount(Math.abs(invoice.amountRaw))})` : formatAmount(invoice.amountRaw);
+        const amountClass = isPayment ? 'amount payment' : 'amount';
+        
+        totalAmount += invoice.amountRaw;
+        
+        html += `<tr>
+          <td>${invoice.customerName}</td>
+          <td><a class="site-link" onclick="searchBySiteCode('${invoice.siteCode}')">${invoice.siteCode}</a></td>
+          <td>${invoice.invNo}</td>
+          <td>${invoice.date}</td>
+          <td>${invoice.description}</td>
+          <td class="${amountClass}">${displayAmount}</td>
+          <td class="overdue ${getAgeClass(invoice.ageBracket)}">${invoice.age}</td>
+        </tr>`;
+      });
+      
+      html += `<tr style="background-color: #e6f2ff; font-weight: 700;">
+        <td colspan="5" style="text-align: right;">TOTAL</td>
+        <td class="amount">${formatAmount(totalAmount)}</td>
+        <td></td>
+      </tr>`;
+      
+      html += `</tbody></table>`;
+      
+      html += `<div class="summary-totals">
+        <div class="summary-card">
+          <h3><i class="fas fa-file-invoice"></i> Total Amount</h3>
+          <div class="amount-big">Rs. ${formatAmount(totalAmount)}</div>
+        </div>
+        <div class="summary-card">
+          <h3><i class="fas fa-list"></i> Number of Records</h3>
+          <div class="amount-big">${invoices.length}</div>
+        </div>
+      </div>`;
+      
+      html += `<div class="download-container">
+        <button class="download-button" onclick="downloadAgeFilterPDF('${ageRange}')">
+          <i class="fas fa-file-pdf"></i> Download as PDF
+        </button>
+        <button class="download-button excel" onclick="downloadAgeFilterExcel('${ageRange}')">
+          <i class="fas fa-file-excel"></i> Download as Excel
+        </button>
+      </div>`;
+      
+      html += `<div style="text-align: center;">
+        <button class="go-back-btn" onclick="goBack()">
+          <i class="fas fa-arrow-left"></i> Go Back
+        </button>
+      </div>`;
+      
+      resultsDiv.innerHTML = html;
+    }
+
+    function downloadAgeFilterPDF(ageRange) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+      
+      let titleText = '';
+      switch(ageRange) {
+        case '0-30':
+          titleText = 'Invoices & Excess Payments (0-30 Days)';
+          break;
+        case '31-60':
+          titleText = 'Invoices & Excess Payments (31-60 Days)';
+          break;
+        case '61-90':
+          titleText = 'Invoices & Excess Payments (61-90 Days)';
+          break;
+        case '91-180':
+          titleText = 'Invoices & Excess Payments (91-180 Days)';
+          break;
+        case '181-360':
+          titleText = 'Invoices & Excess Payments (181-360 Days)';
+          break;
+        case '360-plus':
+          titleText = 'Invoices & Excess Payments (More than 360 Days)';
+          break;
+      }
+      
+      doc.setFontSize(14);
+      doc.text('DOK Solutions Lanka (Pvt) Ltd', 40, 40);
+      doc.setFontSize(12);
+      doc.text(titleText, 40, 60);
+      doc.text(`Generated: ${new Date().toLocaleString()}`, 40, 80);
+      
+      const table = document.querySelector('#results table');
+      
+      doc.autoTable({
+        html: table,
+        startY: 100,
+        theme: 'grid',
+        headStyles: { fillColor: [51,153,255], halign: 'center', fontSize: 9 },
+        styles: { fontSize: 8, cellPadding: 3, lineColor: [204,204,204], lineWidth: 0.1 },
+        columnStyles: { 
+          5: { halign: 'right' },
+          6: { halign: 'center' }
+        },
+        margin: { left: 40, right: 40 },
+      });
+      
+      doc.save(`${titleText}.pdf`);
+    }
+
+    function downloadAgeFilterExcel(ageRange) {
+      const wb = XLSX.utils.book_new();
+      
+      let titleText = '';
+      switch(ageRange) {
+        case '0-30':
+          titleText = 'Invoices & Excess Payments (0-30 Days)';
+          break;
+        case '31-60':
+          titleText = 'Invoices & Excess Payments (31-60 Days)';
+          break;
+        case '61-90':
+          titleText = 'Invoices & Excess Payments (61-90 Days)';
+          break;
+        case '91-180':
+          titleText = 'Invoices & Excess Payments (91-180 Days)';
+          break;
+        case '181-360':
+          titleText = 'Invoices & Excess Payments (181-360 Days)';
+          break;
+        case '360-plus':
+          titleText = 'Invoices & Excess Payments (More than 360 Days)';
+          break;
+      }
+      
+      const reportDate = new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      
+      const wsData = [];
+      
+      wsData.push(['DOK Solutions Lanka (Pvt) Ltd']);
+      wsData.push([titleText]);
+      wsData.push([`As of: ${reportDate}`]);
+      wsData.push([`Generated: ${new Date().toLocaleString()}`]);
+      wsData.push([]);
+      
+      wsData.push([
+        'Customer Name', 
+        'Site Code', 
+        'Invoice No', 
+        'Date', 
+        'Description', 
+        'Amount (Rs.)', 
+        'Age (Days)'
+      ]);
+      
+      const table = document.querySelector('#results table tbody');
+      if (table) {
+        const rows = Array.from(table.rows).slice(0, -1);
+        rows.forEach(row => {
+          const rowData = [];
+          for (let i = 0; i < row.cells.length; i++) {
+            let cellValue = row.cells[i].innerText || row.cells[i].textContent || '';
+            
+            if (i === 5) {
+              cellValue = cellValue.replace(/,/g, '').replace(/Rs\.\s*/, '').replace(/[()]/g, '');
+              cellValue = parseFloat(cellValue) || 0;
+            }
+            
+            rowData.push(cellValue);
+          }
+          wsData.push(rowData);
+        });
+        
+        const totalsRow = table.rows[table.rows.length - 1];
+        if (totalsRow) {
+          const totalsData = [
+            'TOTAL',
+            '',
+            '',
+            '',
+            '',
+            parseFloat(totalsRow.cells[5].textContent.replace(/,/g, '').replace(/Rs\.\s*/, '') || 0),
+            ''
+          ];
+          wsData.push(totalsData);
+        }
+      }
+      
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      
+      const colWidths = [
+        { wch: 35 }, 
+        { wch: 15 }, 
+        { wch: 20 }, 
+        { wch: 15 }, 
+        { wch: 25 }, 
+        { wch: 20 },
+        { wch: 15 }
+      ];
+      ws['!cols'] = colWidths;
+      
+      const range = XLSX.utils.decode_range(ws['!ref']);
+      
+      for (let R = 0; R <= range.e.r; ++R) {
+        for (let C = 0; C <= range.e.c; ++C) {
+          const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+          if (!ws[cellAddress]) continue;
+          
+          if (R === 0) {
+            ws[cellAddress].s = {
+              font: { bold: true, sz: 16, color: { rgb: "00264D" } },
+              alignment: { horizontal: "center", vertical: "center" }
+            };
+            if (C === 0) {
+              ws['!merges'] = ws['!merges'] || [];
+              ws['!merges'].push({ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } });
+            }
+          }
+          else if (R === 1) {
+            ws[cellAddress].s = {
+              font: { bold: true, sz: 14, color: { rgb: "003366" } },
+              alignment: { horizontal: "center", vertical: "center" }
+            };
+            if (C === 0) {
+              ws['!merges'] = ws['!merges'] || [];
+              ws['!merges'].push({ s: { r: 1, c: 0 }, e: { r: 1, c: 6 } });
+            }
+          }
+          else if (R === 2 || R === 3) {
+            ws[cellAddress].s = {
+              font: { sz: 11, color: { rgb: "666666" } },
+              alignment: { horizontal: "center" }
+            };
+            if (C === 0) {
+              ws['!merges'] = ws['!merges'] || [];
+              ws['!merges'].push({ s: { r: R, c: 0 }, e: { r: R, c: 6 } });
+            }
+          }
+          else if (R === 5) {
+            ws[cellAddress].s = {
+              font: { bold: true, sz: 12, color: { rgb: "FFFFFF" } },
+              fill: { fgColor: { rgb: "3399FF" } },
+              alignment: { horizontal: "center", vertical: "center", wrapText: true },
+              border: {
+                top: { style: "thin", color: { rgb: "CCE0FF" } },
+                bottom: { style: "thin", color: { rgb: "CCE0FF" } },
+                left: { style: "thin", color: { rgb: "CCE0FF" } },
+                right: { style: "thin", color: { rgb: "CCE0FF" } }
+              }
+            };
+          }
+          else if (R > 5 && R < wsData.length - 1) {
+            ws[cellAddress].s = {
+              font: { sz: 11 },
+              alignment: { 
+                horizontal: (C === 5) ? "right" : "left",
+                vertical: "center"
+              },
+              border: {
+                top: { style: "thin", color: { rgb: "E6F2FF" } },
+                bottom: { style: "thin", color: { rgb: "E6F2FF" } },
+                left: { style: "thin", color: { rgb: "E6F2FF" } },
+                right: { style: "thin", color: { rgb: "E6F2FF" } }
+              },
+              fill: { fgColor: { rgb: "FFFFFF" } }
+            };
+            
+            if (C === 5) {
+              ws[cellAddress].z = '"Rs. "#,##0.00';
+            }
+          }
+          else if (R === wsData.length - 1) {
+            ws[cellAddress].s = {
+              font: { bold: true, sz: 12, color: { rgb: "00264D" } },
+              fill: { fgColor: { rgb: "E6F2FF" } },
+              alignment: { 
+                horizontal: (C === 5) ? "right" : "right",
+                vertical: "center"
+              },
+              border: {
+                top: { style: "medium", color: { rgb: "3399FF" } },
+                bottom: { style: "thin", color: { rgb: "CCE0FF" } },
+                left: { style: "thin", color: { rgb: "CCE0FF" } },
+                right: { style: "thin", color: { rgb: "CCE0FF" } }
+              }
+            };
+            
+            if (C === 5) {
+              ws[cellAddress].z = '"Rs. "#,##0.00';
+            }
+          }
+        }
+      }
+      
+      XLSX.utils.book_append_sheet(wb, ws, titleText);
+      
+      const fileName = `${titleText}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      XLSX.writeFile(wb, fileName);
     }
 
     async function showAgeAnalysis() {
@@ -1421,30 +2110,44 @@
 
       html += `</tbody></table></div>`;
 
+      // Calculate percentages for each age bucket
+      const percent0_30 = grandTotal !== 0 ? ((total0_30 / grandTotal) * 100).toFixed(1) : 0;
+      const percent31_60 = grandTotal !== 0 ? ((total31_60 / grandTotal) * 100).toFixed(1) : 0;
+      const percent61_90 = grandTotal !== 0 ? ((total61_90 / grandTotal) * 100).toFixed(1) : 0;
+      const percent91_180 = grandTotal !== 0 ? ((total91_180 / grandTotal) * 100).toFixed(1) : 0;
+      const percent181_360 = grandTotal !== 0 ? ((total181_360 / grandTotal) * 100).toFixed(1) : 0;
+      const percentOver360 = grandTotal !== 0 ? ((totalOver360 / grandTotal) * 100).toFixed(1) : 0;
+
       html += `<div class="summary-totals">
         <div class="age-summary-card days-0-30">
           <h3><i class="fas fa-hourglass-start"></i> 0-30 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total0_30)}</div>
+          <div class="percentage">${percent0_30}% of Total</div>
         </div>
         <div class="age-summary-card days-31-60">
           <h3><i class="fas fa-hourglass-half"></i> 31-60 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total31_60)}</div>
+          <div class="percentage">${percent31_60}% of Total</div>
         </div>
         <div class="age-summary-card days-61-90">
           <h3><i class="fas fa-hourglass-end"></i> 61-90 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total61_90)}</div>
+          <div class="percentage">${percent61_90}% of Total</div>
         </div>
         <div class="age-summary-card days-91-180">
           <h3><i class="fas fa-calendar-week"></i> 91-180 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total91_180)}</div>
+          <div class="percentage">${percent91_180}% of Total</div>
         </div>
         <div class="age-summary-card days-181-360">
           <h3><i class="fas fa-calendar-alt"></i> 181-360 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(total181_360)}</div>
+          <div class="percentage">${percent181_360}% of Total</div>
         </div>
         <div class="age-summary-card days-360-plus">
           <h3><i class="fas fa-calendar-times"></i> >360 Days</h3>
           <div class="amount-big">Rs. ${formatAmount(totalOver360)}</div>
+          <div class="percentage">${percentOver360}% of Total</div>
         </div>
         <div class="summary-card">
           <h3><i class="fas fa-chart-line"></i> Total Outstanding</h3>
@@ -2842,7 +3545,7 @@
               alignment: { horizontal: "center", vertical: "center" }
             };
             if (C === 0) {
-              ws['!merges'] = ws['!merges'] || [];
+              ws['!merges'] = ws['merges'] || [];
               ws['!merges'].push({ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } });
             }
           }
@@ -2862,7 +3565,7 @@
               alignment: { horizontal: "center" }
             };
             if (C === 0) {
-              ws['!merges'] = ws['!merges'] || [];
+              ws['!merges'] = ws['!merges'] = ws['!merges'] || [];
               ws['!merges'].push({ s: { r: R, c: 0 }, e: { r: R, c: 5 } });
             }
           }
@@ -2873,7 +3576,7 @@
               fill: { fgColor: { rgb: "F0F8FF" } }
             };
             if (C === 0) {
-              ws['!merges'] = ws['!merges'] || [];
+              ws['!merges'] = ws['!merges'] = ws['!merges'] || [];
               ws['!merges'].push({ s: { r: R, c: 0 }, e: { r: R, c: 5 } });
             }
           }
@@ -3039,6 +3742,7 @@
           didParseCell: function(data) {
             // Check if this is the total row
             if (data.row.raw && data.row.raw.cells && 
+                data.row.raw.cells && 
                 data.row.raw.cells[0] && 
                 data.row.raw.cells[0].textContent.includes('Total Outstanding')) {
               // Apply special styling to the total row
@@ -3082,6 +3786,9 @@
           renderCustomerSummaryWithoutExcess(previousState.data);
         } else if (previousState.view === 'ageAnalysis') {
           renderAgeAnalysis(previousState.data);
+        } else if (previousState.view === 'ageFilter') {
+          currentAgeFilter = previousState.ageRange;
+          renderInvoicesByAge(previousState.data, previousState.ageRange);
         }
       } else {
         // If no history, clear results and return to main menu
@@ -3089,6 +3796,12 @@
         currentView = null;
         previousView = null;
         navigationHistory = [];
+        currentAgeFilter = null;
+        
+        // Hide age filter container when going back to main menu
+        document.getElementById('ageFilterContainer').classList.remove('show');
+        const button = document.querySelector('.search-box:last-child button');
+        button.innerHTML = '<i class="fas fa-filter"></i> Show Age Filter Options';
       }
     }
   </script>
