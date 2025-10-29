@@ -3307,30 +3307,59 @@
       resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-spinner fa-spin"></i> Loading data...</div>`;
 
       const rows = await fetchSheetData();
-      const matches = [];
+      const matches = new Map(); // Using Map to store unique site codes with their data
 
       rows.forEach(row => {
         const siteCode = row.c[1]?.v?.toString().toUpperCase() || '';
         const customerName = row.c[2]?.v?.toString() || '';
+        const description = row.c[5]?.v || '';
+        const amountRaw = row.c[6]?.v || 0;
+        
         if (customerName.toLowerCase().includes(input)) {
-          if (!matches.find(m => m.siteCode === siteCode)) {
-            matches.push({ siteCode, customerName });
+          if (!matches.has(siteCode)) {
+            matches.set(siteCode, {
+              siteCode,
+              customerName,
+              paTotal: 0,
+              daTotal: 0,
+              excessPayment: 0
+            });
+          }
+          
+          const siteData = matches.get(siteCode);
+          
+          if (description === 'PA Manual Invoice') {
+            siteData.paTotal += amountRaw;
+          } else if (description === 'DA Manual Invoice') {
+            siteData.daTotal += amountRaw;
+          } else if (description.toLowerCase() === 'payment') {
+            siteData.excessPayment += amountRaw;
           }
         }
       });
 
-      if (matches.length === 0) {
+      if (matches.size === 0) {
         resultsDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-circle"></i> No sites found for Customer Name containing: <strong>${input}</strong></div>`;
         return;
       }
 
       let html = `<div class="section-title"><i class="fas fa-users"></i> Matching Sites</div><table><thead><tr>
-        <th>Customer Name</th><th>Site Code</th></tr></thead><tbody>`;
+        <th>Customer Name</th><th>Site Code</th><th>PA Outstanding (Rs.)</th><th>DA Outstanding (Rs.)</th><th>Excess Payment (Rs.)</th><th>Total Outstanding (Rs.)</th></tr></thead><tbody>`;
 
       matches.forEach(m => {
+        const grandTotal = m.paTotal + m.daTotal + m.excessPayment;
+        const excessDisplay = m.excessPayment < 0 
+          ? `(${formatAmount(Math.abs(m.excessPayment))})` 
+          : formatAmount(m.excessPayment);
+        const excessClass = m.excessPayment < 0 ? 'amount payment' : 'amount';
+        
         html += `<tr>
           <td>${m.customerName}</td>
           <td><a class="site-link" onclick="searchBySiteCode('${m.siteCode}')">${m.siteCode}</a></td>
+          <td class="amount">${formatAmount(m.paTotal)}</td>
+          <td class="amount">${formatAmount(m.daTotal)}</td>
+          <td class="${excessClass}">${excessDisplay}</td>
+          <td class="amount" style="font-weight: 700;">${formatAmount(grandTotal)}</td>
         </tr>`;
       });
 
